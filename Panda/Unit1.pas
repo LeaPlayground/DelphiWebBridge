@@ -29,8 +29,10 @@ type
     ObjectMessage: string read GetObjectMessage write
   SetObjectMessage;
   end;
+
 var
   Form1: TForm1;
+  BridgeMessage: string;
 
 implementation
 
@@ -40,25 +42,35 @@ uses Unit2;
 
 function TMyBridgeObject.GetObjectMessage(): string;
 begin
-  Exit('Message');
+  // Return previously saved BridgeMessage
+  Exit(BridgeMessage);
 end;
 
 procedure TMyBridgeObject.SetObjectMessage(const Value:
 string);
 begin
- if (Value = 'panda') then
-   Form2.Show();
+  // If the incoming message is 'panda'..
+  if (Value = 'panda') then
+    // .. then show user the "panda memory"
+    Form2.Show();
 
- ShowMessage('From JS Bridge: ' + #13 + Value);
+  // Save the incoming message string into variable BridgeMessage
+  BridgeMessage := Value;
+
+  // Display a message box with the incoming value
+  ShowMessage('From JS Bridge: ' + #13 + Value);
 end;
 
 
 
 procedure TForm1.FormCreate(Sender: TObject);
 var
+  // Declare local variable o with type TMyBridgeObject
   o: TMyBridgeObject;
 begin
+  // Create TMyBridgeObject
   o := TMyBridgeObject.Create;
+  // Assign TMyBridgeObject to TTMSFncWebBrowser
   self.WebBrowser1.AddBridge(BridgeName, o);
 end;
 
